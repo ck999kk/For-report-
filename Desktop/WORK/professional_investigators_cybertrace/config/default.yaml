@@ -1,0 +1,75 @@
+# Professional Investigation System - Default Configuration
+
+system:
+  name: "Professional Investigation System"
+  version: "1.0.0"
+  debug: false
+  max_workers: 4
+  timeout: 300
+
+logging:
+  level: "INFO"
+  log_dir: "logs"
+  console_output: true
+  max_file_size: 10485760  # 10MB
+  backup_count: 10
+  enable_encryption: true
+  audit_mode: true
+
+security:
+  enable_encryption: true
+  hash_algorithm: "sha256"
+  session_timeout: 3600
+  max_login_attempts: 3
+  require_mfa: false
+
+cybertrace:
+  max_concurrent_traces: 5
+  trace_timeout: 600
+  enable_deep_scan: true
+  save_raw_data: true
+  
+  network_tracer:
+    timeout: 30
+    retries: 3
+    user_agent: "Professional-Investigation-System/1.0"
+    rate_limit: 10
+  
+  digital_forensics:
+    max_file_size: 104857600  # 100MB
+    hash_algorithms: ["md5", "sha1", "sha256", "sha512"]
+    strings_min_length: 4
+    hex_dump_bytes: 512
+  
+  osint:
+    timeout: 30
+    retries: 3
+    user_agent: "Mozilla/5.0 (Investigation-System/1.0)"
+    rate_limit: 5
+    max_results: 100
+  
+  metadata:
+    max_file_size: 104857600  # 100MB
+    extract_hidden_data: true
+    analyze_structure: true
+
+evidence:
+  storage_path: "evidence_storage"
+  enable_versioning: true
+  compression: true
+  encryption: true
+  backup_enabled: true
+  max_file_size: 1073741824  # 1GB
+
+reporting:
+  output_path: "reports"
+  format: "html"
+  include_metadata: true
+  watermark: true
+  digital_signature: true
+
+network:
+  timeout: 30
+  retries: 3
+  user_agent: "Professional-Investigation-System/1.0"
+  rate_limit: 10

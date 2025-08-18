@@ -1,0 +1,49 @@
+{
+  "test_summary": {
+    "overall_score": 75.0,
+    "investigation_success_rate": 100.0,
+    "evidence_integrity_rate": 100,
+    "database_consistency_score": 0,
+    "performance_score": 100,
+    "total_test_time": 2.2337090969085693
+  },
+  "investigation_results": [
+    {
+      "investigation_id": "a4c0ccbb-b2b7-4821-8ffd-aeb98ff81640",
+      "phone_number": "+1-555-123-4567",
+      "success": true,
+      "results": null
+    },
+    {
+      "investigation_id": "744fc7b6-7350-455e-84f8-a199028e61df",
+      "phone_number": "+44-20-7946-0958",
+      "success": true,
+      "results": null
+    },
+    {
+      "investigation_id": "8369a2f2-f789-490c-9208-0f42b56dab58",
+      "phone_number": "+33-1-23-45-67-89",
+      "success": true,
+      "results": null
+    }
+  ],
+  "evidence_results": {
+    "total_evidence": 0,
+    "verified_evidence": 0,
+    "integrity_rate": 100
+  },
+  "database_results": {
+    "investigation_count": 0,
+    "evidence_count": 5,
+    "custody_count": 5,
+    "orphaned_evidence": 5,
+    "consistent": false
+  },
+  "performance_results": {
+    "validation_rate": 2845.718162697605,
+    "query_rate": 38789.45713493018,
+    "validation_time": 0.052710771560668945,
+    "query_time": 0.0025780200958251953
+  },
+  "timestamp": "2025-08-19T00:04:04.405330"
+}

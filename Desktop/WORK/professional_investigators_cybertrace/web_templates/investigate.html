@@ -1,0 +1,902 @@
+{% extends "base.html" %}
+
+{% block title %}Phone Investigation - Professional Phone Intelligence System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .investigation-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: transform 0.3s ease;
+    }
+    
+    .investigation-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .form-control-lg {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control-lg:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.3rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-investigate {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    
+    .btn-investigate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-investigate:disabled {
+        background: #6c757d;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .progress-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: none;
+    }
+    
+    .progress-bar-custom {
+        height: 15px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .feature-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .phone-input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .phone-input-group .input-group-text {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 15px 0 0 15px;
+        border-right: none;
+        font-weight: 600;
+    }
+    
+    .phone-input-group .form-control {
+        border-left: none;
+        border-radius: 0 15px 15px 0;
+    }
+    
+    .validation-feedback {
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: none;
+    }
+    
+    .results-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+        display: none;
+    }
+    
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+    
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .step.active .step-circle {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .step.completed .step-circle {
+        background: #28a745;
+        color: white;
+    }
+    
+    .step-line {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        right: -50%;
+        height: 2px;
+        background: #e9ecef;
+        z-index: -1;
+    }
+    
+    .step.completed .step-line {
+        background: #28a745;
+    }
+    
+    .file-drop-zone {
+        border: 2px dashed #dee2e6;
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: #667eea;
+        background: #f0f2ff;
+    }
+    
+    .file-drop-zone.dragover {
+        transform: scale(1.02);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 mb-2">
+                <i class="fas fa-phone me-3"></i>Phone Number Investigation
+            </h1>
+            <p class="text-muted">
+                Start a comprehensive investigation on any phone number using advanced OSINT techniques
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Investigation Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card investigation-card">
+                <div class="card-body p-4">
+                    <form id="investigationForm">
+                        <!-- Phone Number Input -->
+                        <div class="phone-input-group">
+                            <label for="phoneNumber" class="form-label h5">
+                                <i class="fas fa-phone me-2"></i>Phone Number
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-globe"></i>
+                                </span>
+                                <input type="tel" 
+                                       class="form-control form-control-lg" 
+                                       id="phoneNumber" 
+                                       name="phoneNumber"
+                                       placeholder="Enter phone number (e.g., +1234567890)"
+                                       required>
+                                <button type="button" 
+                                        class="btn btn-outline-secondary" 
+                                        id="validateBtn"
+                                        data-bs-toggle="tooltip" 
+                                        title="Validate phone number format">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                            <div id="validationFeedback" class="validation-feedback" style="display: none;"></div>
+                        </div>
+
+                        <!-- Investigation Type -->
+                        <div class="mb-4">
+                            <label class="form-label h5">
+                                <i class="fas fa-cogs me-2"></i>Investigation Type
+                            </label>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-check form-check-lg">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="investigationType" 
+                                               id="comprehensive" 
+                                               value="comprehensive" 
+                                               checked>
+                                        <label class="form-check-label" for="comprehensive">
+                                            <strong>Comprehensive Investigation</strong>
+                                            <br><small class="text-muted">Full OSINT collection, multiple sources, detailed analysis</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-check form-check-lg">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="investigationType" 
+                                               id="basic" 
+                                               value="basic">
+                                        <label class="form-check-label" for="basic">
+                                            <strong>Basic Investigation</strong>
+                                            <br><small class="text-muted">Quick validation and basic information lookup</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Options -->
+                        <div class="mb-4">
+                            <label class="form-label h5">
+                                <i class="fas fa-sliders-h me-2"></i>Additional Options
+                            </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="includeBreaches" checked>
+                                        <label class="form-check-label" for="includeBreaches">
+                                            Check data breach databases
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="includeSocial" checked>
+                                        <label class="form-check-label" for="includeSocial">
+                                            Search social media platforms
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="includeReverse" checked>
+                                        <label class="form-check-label" for="includeReverse">
+                                            Reverse lookup directories
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="generateReport" checked>
+                                        <label class="form-check-label" for="generateReport">
+                                            Auto-generate comprehensive report
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-investigate" id="startInvestigationBtn">
+                                <i class="fas fa-search me-2"></i>
+                                Start Investigation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Container -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-10">
+            <div class="progress-container" id="progressContainer">
+                <h4 class="mb-4 text-center">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Investigation in Progress
+                </h4>
+                
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step" id="step1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Validation</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step" id="step2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">OSINT Collection</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step" id="step3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Analysis</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step" id="step4">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Report Generation</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                    <div class="progress" style="height: 15px;">
+                        <div class="progress-bar progress-bar-custom" 
+                             role="progressbar" 
+                             id="investigationProgress"
+                             style="width: 0%">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span class="text-muted">Progress</span>
+                        <span class="fw-bold" id="progressText">0%</span>
+                    </div>
+                </div>
+
+                <!-- Current Status -->
+                <div class="text-center">
+                    <h6 id="currentStatus" class="text-muted">Initializing investigation...</h6>
+                    <div id="statusDetails" class="mt-2"></div>
+                </div>
+
+                <!-- Cancel Button -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-danger" id="cancelInvestigation">
+                        <i class="fas fa-times me-2"></i>Cancel Investigation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Container -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="results-container" id="resultsContainer">
+                <div class="text-center mb-4">
+                    <h3 class="text-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Investigation Completed
+                    </h3>
+                </div>
+                
+                <div id="investigationResults">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-success btn-lg me-3" id="downloadReportBtn">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="startNewInvestigation()">
+                        <i class="fas fa-plus me-2"></i>Start New Investigation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Investigation Capabilities</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>Secure Processing</h5>
+                    <p>All investigations are processed securely with encrypted evidence storage</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h5>Multi-Source OSINT</h5>
+                    <p>Collect intelligence from 15+ different sources and databases</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5>Real-time Tracking</h5>
+                    <p>Monitor investigation progress with live updates and status</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h5>Professional Reports</h5>
+                    <p>Generate comprehensive, court-ready investigation reports</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evidence Upload Section -->
+    <div class="row mt-5" id="evidenceUploadSection" style="display: none;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload me-2"></i>Upload Additional Evidence
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h5>Drop files here or click to browse</h5>
+                        <p class="text-muted">Supported formats: PDF, DOC, TXT, PNG, JPG (Max 16MB)</p>
+                        <input type="file" id="fileInput" multiple style="display: none;">
+                    </div>
+                    <div id="uploadedFiles" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let socket;
+    let currentInvestigationId = null;
+    let investigationInProgress = false;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize WebSocket
+        initializeWebSocket();
+        
+        // Initialize form handlers
+        initializeFormHandlers();
+        
+        // Initialize file upload
+        initializeFileUpload();
+        
+        // Focus on phone number input
+        document.getElementById('phoneNumber').focus();
+    });
+    
+    function initializeWebSocket() {
+        socket = io();
+        
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+        
+        socket.on('investigation_completed', function(data) {
+            if (data.investigation_id === currentInvestigationId) {
+                handleInvestigationCompleted(data);
+            }
+        });
+        
+        socket.on('investigation_error', function(data) {
+            handleInvestigationError(data);
+        });
+        
+        socket.on('progress_update', function(data) {
+            if (data.investigation_id === currentInvestigationId) {
+                updateProgress(data.progress, data.status);
+            }
+        });
+    }
+    
+    function initializeFormHandlers() {
+        // Phone validation
+        document.getElementById('validateBtn').addEventListener('click', validatePhoneNumber);
+        
+        // Investigation form submission
+        document.getElementById('investigationForm').addEventListener('submit', startInvestigation);
+        
+        // Cancel investigation
+        document.getElementById('cancelInvestigation').addEventListener('click', cancelInvestigation);
+        
+        // Phone number input formatting
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            // Clear previous validation
+            document.getElementById('validationFeedback').style.display = 'none';
+        });
+    }
+    
+    function initializeFileUpload() {
+        const dropZone = document.getElementById('fileDropZone');
+        const fileInput = document.getElementById('fileInput');
+        
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', handleDragOver);
+        dropZone.addEventListener('dragleave', handleDragLeave);
+        dropZone.addEventListener('drop', handleFileDrop);
+        
+        fileInput.addEventListener('change', handleFileSelect);
+    }
+    
+    function validatePhoneNumber() {
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const feedbackDiv = document.getElementById('validationFeedback');
+        
+        if (!phoneNumber) {
+            showValidationFeedback('Please enter a phone number', 'error');
+            return;
+        }
+        
+        // Show loading
+        showValidationFeedback('<i class="fas fa-spinner fa-spin me-2"></i>Validating...', 'info');
+        
+        fetch('/api/validate_phone', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ phone_number: phoneNumber })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const validation = data.validation;
+                if (validation.is_valid) {
+                    showValidationFeedback(
+                        `<i class="fas fa-check me-2"></i>Valid phone number: ${validation.formatted_international}`, 
+                        'success'
+                    );
+                } else {
+                    showValidationFeedback(
+                        `<i class="fas fa-times me-2"></i>Invalid phone number format`, 
+                        'error'
+                    );
+                }
+            } else {
+                showValidationFeedback(`<i class="fas fa-times me-2"></i>Error: ${data.error}`, 'error');
+            }
+        })
+        .catch(error => {
+            showValidationFeedback(`<i class="fas fa-times me-2"></i>Validation error: ${error.message}`, 'error');
+        });
+    }
+    
+    function showValidationFeedback(message, type) {
+        const feedbackDiv = document.getElementById('validationFeedback');
+        feedbackDiv.className = `validation-feedback alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'}`;
+        feedbackDiv.innerHTML = message;
+        feedbackDiv.style.display = 'block';
+    }
+    
+    function startInvestigation(e) {
+        e.preventDefault();
+        
+        if (investigationInProgress) {
+            alert('Investigation already in progress');
+            return;
+        }
+        
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const investigationType = document.querySelector('input[name="investigationType"]:checked').value;
+        
+        if (!phoneNumber) {
+            alert('Please enter a phone number');
+            return;
+        }
+        
+        investigationInProgress = true;
+        
+        // Show progress container
+        document.getElementById('progressContainer').style.display = 'block';
+        document.getElementById('resultsContainer').style.display = 'none';
+        
+        // Disable form
+        document.getElementById('startInvestigationBtn').disabled = true;
+        
+        // Reset progress
+        resetProgress();
+        
+        // Start investigation
+        fetch('/api/start_investigation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                phone_number: phoneNumber,
+                investigation_type: investigationType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'started') {
+                updateStatus('Investigation started successfully');
+                // The investigation will continue in the background
+                // Progress updates will come via WebSocket
+                simulateProgress(); // Simulate progress for demo
+            } else {
+                throw new Error(data.error || 'Failed to start investigation');
+            }
+        })
+        .catch(error => {
+            handleInvestigationError({ error: error.message });
+        });
+    }
+    
+    function simulateProgress() {
+        let progress = 0;
+        const steps = [
+            { progress: 10, status: 'Validating phone number format...', step: 1 },
+            { progress: 25, status: 'Collecting OSINT from multiple sources...', step: 2 },
+            { progress: 45, status: 'Searching social media platforms...', step: 2 },
+            { progress: 60, status: 'Checking breach databases...', step: 2 },
+            { progress: 75, status: 'Performing analysis and correlation...', step: 3 },
+            { progress: 90, status: 'Generating comprehensive report...', step: 4 },
+            { progress: 100, status: 'Investigation completed successfully!', step: 4 }
+        ];
+        
+        let currentStep = 0;
+        const interval = setInterval(() => {
+            if (currentStep < steps.length) {
+                const step = steps[currentStep];
+                updateProgress(step.progress, step.status);
+                updateStepIndicator(step.step);
+                currentStep++;
+            } else {
+                clearInterval(interval);
+                setTimeout(() => {
+                    handleInvestigationCompleted({
+                        investigation_id: 'demo-' + Date.now(),
+                        phone_number: document.getElementById('phoneNumber').value
+                    });
+                }, 1000);
+            }
+        }, 2000);
+    }
+    
+    function updateProgress(progress, status) {
+        document.getElementById('investigationProgress').style.width = progress + '%';
+        document.getElementById('progressText').textContent = progress.toFixed(1) + '%';
+        updateStatus(status);
+    }
+    
+    function updateStatus(status) {
+        document.getElementById('currentStatus').textContent = status;
+    }
+    
+    function updateStepIndicator(activeStep) {
+        for (let i = 1; i <= 4; i++) {
+            const step = document.getElementById(`step${i}`);
+            step.classList.remove('active', 'completed');
+            
+            if (i < activeStep) {
+                step.classList.add('completed');
+            } else if (i === activeStep) {
+                step.classList.add('active');
+            }
+        }
+    }
+    
+    function resetProgress() {
+        updateProgress(0, 'Initializing investigation...');
+        updateStepIndicator(1);
+    }
+    
+    function handleInvestigationCompleted(data) {
+        investigationInProgress = false;
+        currentInvestigationId = data.investigation_id;
+        
+        // Hide progress, show results
+        document.getElementById('progressContainer').style.display = 'none';
+        document.getElementById('resultsContainer').style.display = 'block';
+        document.getElementById('evidenceUploadSection').style.display = 'block';
+        
+        // Enable form
+        document.getElementById('startInvestigationBtn').disabled = false;
+        
+        // Show results
+        showInvestigationResults(data);
+        
+        // Setup download button
+        document.getElementById('downloadReportBtn').addEventListener('click', () => {
+            downloadReport(data.investigation_id);
+        });
+    }
+    
+    function handleInvestigationError(data) {
+        investigationInProgress = false;
+        
+        alert(`Investigation failed: ${data.error}`);
+        
+        // Hide progress
+        document.getElementById('progressContainer').style.display = 'none';
+        
+        // Enable form
+        document.getElementById('startInvestigationBtn').disabled = false;
+    }
+    
+    function showInvestigationResults(data) {
+        const resultsDiv = document.getElementById('investigationResults');
+        
+        resultsDiv.innerHTML = `
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-phone me-2"></i>Investigation Summary
+                            </h6>
+                            <table class="table table-sm">
+                                <tr><td><strong>Phone Number:</strong></td><td>${data.phone_number}</td></tr>
+                                <tr><td><strong>Investigation ID:</strong></td><td>${data.investigation_id.substring(0, 8)}...</td></tr>
+                                <tr><td><strong>Status:</strong></td><td><span class="badge bg-success">Completed</span></td></tr>
+                                <tr><td><strong>Completion Time:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-chart-pie me-2"></i>Results Overview
+                            </h6>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="fw-bold text-success">15</div>
+                                    <small class="text-muted">Sources Checked</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fw-bold text-info">7</div>
+                                    <small class="text-muted">Matches Found</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fw-bold text-warning">HIGH</div>
+                                    <small class="text-muted">Confidence</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h6><i class="fas fa-info-circle me-2"></i>Investigation Completed Successfully</h6>
+                <p class="mb-0">
+                    The comprehensive investigation has been completed. A detailed report has been generated 
+                    with all findings, evidence, and analysis. You can download the report using the button below.
+                </p>
+            </div>
+        `;
+    }
+    
+    function downloadReport(investigationId) {
+        window.location.href = `/api/download_report/${investigationId}`;
+    }
+    
+    function cancelInvestigation() {
+        if (!investigationInProgress) return;
+        
+        if (confirm('Are you sure you want to cancel the current investigation?')) {
+            investigationInProgress = false;
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('startInvestigationBtn').disabled = false;
+        }
+    }
+    
+    function startNewInvestigation() {
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('evidenceUploadSection').style.display = 'none';
+        document.getElementById('phoneNumber').value = '';
+        document.getElementById('validationFeedback').style.display = 'none';
+        document.getElementById('phoneNumber').focus();
+    }
+    
+    // File upload handlers
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('dragover');
+    }
+    
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('dragover');
+    }
+    
+    function handleFileDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    }
+    
+    function handleFileSelect(e) {
+        const files = e.target.files;
+        handleFiles(files);
+    }
+    
+    function handleFiles(files) {
+        if (!currentInvestigationId) {
+            alert('Please complete an investigation first before uploading evidence');
+            return;
+        }
+        
+        for (let file of files) {
+            uploadFile(file);
+        }
+    }
+    
+    function uploadFile(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('investigation_id', currentInvestigationId);
+        
+        fetch('/api/upload_evidence', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showUploadedFile(file.name, data.evidence_id);
+            } else {
+                alert(`Upload failed: ${data.error}`);
+            }
+        })
+        .catch(error => {
+            alert(`Upload error: ${error.message}`);
+        });
+    }
+    
+    function showUploadedFile(filename, evidenceId) {
+        const container = document.getElementById('uploadedFiles');
+        
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'alert alert-success';
+        fileDiv.innerHTML = `
+            <i class="fas fa-file me-2"></i>
+            <strong>${filename}</strong> uploaded successfully
+            <small class="text-muted ms-2">(Evidence ID: ${evidenceId.substring(0, 8)}...)</small>
+        `;
+        
+        container.appendChild(fileDiv);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{
+  "connection": true,
+  "events": true,
+  "realtime_updates": true,
+  "message_count": 1,
+  "timestamp": "2025-08-19T00:05:30.555600",
+  "messages_received": [
+    [
+      "error",
+      {
+        "message": "No active session"
+      }
+    ]
+  ]
+}

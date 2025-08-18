@@ -1,0 +1,27 @@
+# Professional Investigation System - Dependencies
+
+# Core dependencies
+pyyaml>=6.0
+requests>=2.28.0
+dnspython>=2.3.0
+python-whois>=0.8.0
+cryptography>=40.0.0
+bcrypt>=4.0.0
+
+# Optional dependencies for enhanced functionality
+pillow>=9.0.0  # For image EXIF analysis
+python-magic>=0.4.27  # For file type detection
+xattr>=0.10.1  # For extended file attributes (Unix/Linux/macOS)
+
+# Development and testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Documentation
+# sphinx>=5.0.0  # Uncomment if documentation generation needed
+
+# Note: Some features may require additional system tools:
+# - exiftool (for comprehensive metadata extraction)
+# - traceroute (for network tracing)
+# - ps (for process listing on Unix systems)
+# - wkhtmltopdf or weasyprint (for PDF report generation)

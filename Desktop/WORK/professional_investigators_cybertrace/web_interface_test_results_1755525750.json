@@ -1,0 +1,38 @@
+{
+  "login_workflow": true,
+  "dashboard_access": true,
+  "api_endpoints": {
+    "validate_phone": {
+      "status_code": 200,
+      "success": true
+    },
+    "session_info": {
+      "status_code": 200,
+      "success": true
+    },
+    "start_investigation": {
+      "status_code": 200,
+      "success": true
+    }
+  },
+  "investigation_pages": {
+    "investigate": {
+      "status_code": 200,
+      "success": true
+    },
+    "reports": {
+      "status_code": 200,
+      "success": true
+    },
+    "history": {
+      "status_code": 200,
+      "success": true
+    }
+  },
+  "file_upload": true,
+  "responsive_design": {
+    "css_/static/css/main.css": false,
+    "js_/static/js/main.js": false
+  },
+  "timestamp": "2025-08-19T00:02:30.075446"
+}

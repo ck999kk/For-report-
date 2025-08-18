@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Professional Phone Intelligence System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .login-form {
+            padding: 2rem;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .feature-list {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .feature-item i {
+            color: #667eea;
+            margin-right: 0.75rem;
+            width: 20px;
+        }
+        
+        .system-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="login-container">
+                    <div class="login-header">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h2 class="mb-0">Professional Phone Intelligence</h2>
+                        <p class="mb-0 mt-2 opacity-75">Advanced Investigation Platform</p>
+                        <div class="system-badge mt-3">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Secure Access Portal
+                        </div>
+                    </div>
+                    
+                    <div class="login-form">
+                        <!-- Flash Messages -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <form method="POST" id="loginForm">
+                            <div class="mb-4">
+                                <label for="investigator_name" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Investigator Name
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="investigator_name" 
+                                       name="investigator_name" 
+                                       placeholder="Enter your investigator name"
+                                       required>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Enter your official investigator designation
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-login">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    Start Investigation Session
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="feature-list">
+                            <h6 class="text-muted mb-3">
+                                <i class="fas fa-star me-2"></i>Platform Features
+                            </h6>
+                            <div class="feature-item">
+                                <i class="fas fa-phone"></i>
+                                <span>Advanced phone number intelligence</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-search"></i>
+                                <span>Multi-source OSINT collection</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Secure evidence management</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Real-time investigation tracking</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>Professional report generation</span>
+                            </div>
+                            <div class="feature-item mb-0">
+                                <i class="fas fa-users"></i>
+                                <span>Multi-investigator collaboration</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-lock me-1"></i>
+                                Secure • Professional • Reliable
+                            </p>
+                            <small class="text-muted">Version 1.0.0 | Professional Grade</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Form validation and enhancement
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const investigatorName = document.getElementById('investigator_name').value.trim();
+            
+            if (!investigatorName) {
+                e.preventDefault();
+                alert('Please enter your investigator name');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalContent = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Initializing Session...';
+            submitBtn.disabled = true;
+            
+            // Re-enable if there's an error (form will redirect on success)
+            setTimeout(() => {
+                submitBtn.innerHTML = originalContent;
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+        
+        // Auto-focus on investigator name field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('investigator_name').focus();
+        });
+        
+        // Enter key handling
+        document.getElementById('investigator_name').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').submit();
+            }
+        });
+    </script>
+</body>
+</html>

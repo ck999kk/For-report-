@@ -1,0 +1,142 @@
+# System files
+.DS_Store
+.localized
+.metadata_never_index
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.cursor/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+logs/
+
+# Cache directories
+.cache/
+__pycache__/
+
+# Environment and config files
+.env
+*.key
+.ai_keys
+.openai_api_key
+.credflow_key
+.ghcr.env
+.n8n_env
+ports.env
+
+# Personal and sensitive directories
+.ssh/
+.gnupg/
+.claude/
+.claude_*/
+.gmail-mcp/
+.docker/
+.npm/
+.config/
+.local/
+.ollama/
+
+# User-specific files
+.bash_history
+.zsh_history
+.bash_sessions/
+.zsh_sessions/
+.viminfo
+.bashrc*
+.zshrc*
+.bash_profile*
+.zprofile
+.zlogout
+.zcompdump
+
+# Application data
+.anydesk/
+.homebridge/
+.hammerspoon/
+.matplotlib/
+.pandoc/
+.parallel/
+.oracle_jre_usage/
+.sonarlint/
+.subversion/
+.terraform.d/
+.cups/
+.jssc/
+.kube/
+.npm-global/
+
+# Backup files
+*.backup
+*.bak
+*.BAK.*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compiled files
+*.pyc
+*.pyo
+*.class
+
+# Package files
+node_modules/
+*.tar.gz
+*.zip
+
+# OS-specific files
+.Trash/
+.CFUserTextEncoding
+
+# AI and automation logs
+.ai_guardian*
+.ai_logs/
+.ai_systems.pid
+.system-guardian.log
+.universal-tools-*.log
+.legal_update.log
+.pollution-violations.log
+
+# Large media and application directories
+Applications*/
+Library/
+Movies/
+Music/
+Pictures/
+Downloads/
+Documents/
+Public/
+Media/
+Parallels/
+"Virtual Machines.localized"/
+"Shutter Encoder"/
+"iCloud Drive (Archive)"/
+"My Drive"/
+ObsidianVault/
+OneDrive
+
+# Development and project directories
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Lock files
+$LOCK_FILE
+package-lock.json
+
+# Specific large files or directories to exclude
+*.deb
+HyperHDR-*
+matlab_crash_dump.*

@@ -1,0 +1,281 @@
+{
+  "total_tests": 36,
+  "passed_tests": 15,
+  "success_rate": 41.66666666666667,
+  "detailed_results": {
+    "phone_validation": [
+      {
+        "phone": "+1-555-123-4567",
+        "is_valid": false,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "+44-20-7946-0958",
+        "is_valid": true,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "+81-3-1234-5678",
+        "is_valid": true,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "+33-1-23-45-67-89",
+        "is_valid": true,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "+49-30-12345678",
+        "is_valid": true,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "+61-2-1234-5678",
+        "is_valid": true,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "15551234567",
+        "is_valid": false,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "invalid-phone",
+        "is_valid": false,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "",
+        "is_valid": false,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      },
+      {
+        "phone": "123",
+        "is_valid": false,
+        "formatted": "",
+        "country": "",
+        "carrier_info": {},
+        "location_info": {}
+      }
+    ],
+    "osint_collection": [
+      {
+        "source": "carrier_lookup",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487333"
+      },
+      {
+        "source": "location_data",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487343"
+      },
+      {
+        "source": "social_media_scan",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487348"
+      },
+      {
+        "source": "public_records",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487352"
+      },
+      {
+        "source": "reverse_lookup",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487355"
+      },
+      {
+        "source": "spam_database",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487358"
+      },
+      {
+        "source": "telecom_registry",
+        "phone": "+1-555-123-4567",
+        "status": "tested",
+        "data_collected": true,
+        "timestamp": "2025-08-19T00:01:29.487362"
+      }
+    ],
+    "evidence_management": [
+      {
+        "operation": "CREATE",
+        "evidence_id": "4f04db7c-e39f-436c-9962-c6920092e946",
+        "status": "success"
+      },
+      {
+        "operation": "ERROR",
+        "error": "'EvidenceManager' object has no attribute 'get_evidence'",
+        "status": "failed"
+      }
+    ],
+    "report_generation": [
+      {
+        "format": "ERROR",
+        "error": "'PhoneIntelligenceSystem' object has no attribute 'generate_investigation_report'",
+        "status": "failed"
+      }
+    ],
+    "web_apis": [
+      {
+        "endpoint": "/api/system/status",
+        "status_code": 200,
+        "response": {
+          "active_investigations": 0,
+          "active_sessions": 0,
+          "status": "operational",
+          "system_uptime": 241.475359916687,
+          "version": "1.0.0"
+        },
+        "success": true
+      },
+      {
+        "endpoint": "/api/validate_phone",
+        "status_code": 401,
+        "requires_auth": true,
+        "success": true
+      },
+      {
+        "endpoint": "/api/investigations",
+        "method": "GET",
+        "status_code": 401,
+        "success": true
+      },
+      {
+        "endpoint": "/api/session_info",
+        "method": "GET",
+        "status_code": 401,
+        "success": true
+      },
+      {
+        "endpoint": "/login",
+        "method": "GET",
+        "status_code": 200,
+        "success": true
+      },
+      {
+        "endpoint": "/",
+        "method": "GET",
+        "status_code": 200,
+        "success": true
+      }
+    ],
+    "security": [
+      {
+        "endpoint": "/api/validate_phone",
+        "protected": true,
+        "status_code": 401
+      },
+      {
+        "endpoint": "/api/start_investigation",
+        "protected": true,
+        "status_code": 401
+      },
+      {
+        "endpoint": "/api/investigations",
+        "protected": false,
+        "status_code": 405
+      },
+      {
+        "endpoint": "/api/session_info",
+        "protected": false,
+        "status_code": 405
+      },
+      {
+        "test": "invalid_login",
+        "rejected": true,
+        "status_code": 200
+      }
+    ],
+    "database": [
+      {
+        "operation": "connection",
+        "tables_found": 9,
+        "table_names": [
+          "evidence",
+          "chain_of_custody",
+          "investigations",
+          "investigation_results",
+          "sessions",
+          "system_logs",
+          "sqlite_sequence",
+          "api_usage",
+          "system_status"
+        ],
+        "success": true
+      },
+      {
+        "operation": "CRUD",
+        "insert_success": true,
+        "select_count": 2,
+        "success": true
+      }
+    ],
+    "websockets": [],
+    "performance": [
+      {
+        "test": "phone_validation_speed",
+        "iterations": 100,
+        "total_time": 0.03743410110473633,
+        "avg_time_per_call": 0.00037434101104736326,
+        "calls_per_second": 2671.3610598051077
+      },
+      {
+        "test": "database_query_speed",
+        "iterations": 50,
+        "total_time": 0.0010399818420410156,
+        "avg_time_per_query": 2.079963684082031e-05,
+        "queries_per_second": 48077.76249426868
+      }
+    ],
+    "stress_tests": [
+      {
+        "test": "concurrent_validation",
+        "total_operations": 50,
+        "valid_results": 40,
+        "time_taken": 0.016247034072875977,
+        "throughput": 3077.4847751118937
+      }
+    ]
+  },
+  "timestamp": "2025-08-19T00:01:29.662112"
+}

@@ -1,0 +1,17 @@
+apis:
+  bing_api_key: ''
+  google_api_key: ''
+  numverify_api_key: ''
+  truecaller_api_key: ''
+investigation:
+  default_timeout: 300
+  evidence_retention_days: 365
+  max_osint_sources: 15
+reporting:
+  auto_generate_summary: true
+  default_format: html
+  include_raw_data: false
+system:
+  max_concurrent_investigations: 10
+  name: Professional Phone Intelligence System
+  version: 2.0.0

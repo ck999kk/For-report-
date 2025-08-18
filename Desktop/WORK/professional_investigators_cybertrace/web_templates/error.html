@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ error_code }} - Professional Phone Intelligence System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .error-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .error-icon {
+            font-size: 5rem;
+            color: #dc3545;
+            margin-bottom: 2rem;
+        }
+        
+        .error-code {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .error-message {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-home {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .error-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .system-info {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .help-links {
+            margin-top: 2rem;
+        }
+        
+        .help-links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="error-container">
+                    <!-- Error Icon -->
+                    <div class="error-icon">
+                        {% if error_code == 404 %}
+                            <i class="fas fa-search"></i>
+                        {% elif error_code == 500 %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% elif error_code == 403 %}
+                            <i class="fas fa-lock"></i>
+                        {% else %}
+                            <i class="fas fa-question-circle"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Error Code -->
+                    <div class="error-code">{{ error_code }}</div>
+                    
+                    <!-- Error Title -->
+                    <h2 class="mb-3">
+                        {% if error_code == 404 %}
+                            Page Not Found
+                        {% elif error_code == 500 %}
+                            Internal Server Error
+                        {% elif error_code == 403 %}
+                            Access Forbidden
+                        {% else %}
+                            Something Went Wrong
+                        {% endif %}
+                    </h2>
+                    
+                    <!-- Error Message -->
+                    <div class="error-message">
+                        {% if error_code == 404 %}
+                            The page you're looking for doesn't exist or has been moved. Please check the URL and try again.
+                        {% elif error_code == 500 %}
+                            We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.
+                        {% elif error_code == 403 %}
+                            You don't have permission to access this resource. Please check your credentials or contact your administrator.
+                        {% else %}
+                            {{ error_message or "An unexpected error occurred. Please try again later." }}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <a href="/" class="btn-home">
+                        <i class="fas fa-home me-2"></i>
+                        Return to Dashboard
+                    </a>
+                    
+                    <!-- Error Details (for development) -->
+                    {% if error_message and error_code == 500 %}
+                    <div class="error-details">
+                        <h6><i class="fas fa-info-circle me-2"></i>Technical Details</h6>
+                        <p class="mb-0 text-muted">{{ error_message }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- System Information -->
+                    <div class="system-info">
+                        <h6 class="text-muted mb-3">System Information</h6>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-server text-muted"></i>
+                                <br><small class="text-muted">System Online</small>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <br><small class="text-muted">Secure Connection</small>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-clock text-muted"></i>
+                                <br><small class="text-muted" id="currentTime"></small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Help Links -->
+                    <div class="help-links">
+                        <h6 class="text-muted mb-3">Need Help?</h6>
+                        <a href="javascript:history.back()">
+                            <i class="fas fa-arrow-left me-1"></i>Go Back
+                        </a>
+                        <a href="/">
+                            <i class="fas fa-home me-1"></i>Dashboard
+                        </a>
+                        <a href="/investigate">
+                            <i class="fas fa-phone me-1"></i>New Investigation
+                        </a>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="mt-4 pt-3 border-top">
+                        <p class="text-muted mb-0">
+                            <strong>Professional Phone Intelligence System</strong>
+                        </p>
+                        <small class="text-muted">Version 1.0.0 | Professional Grade</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Auto-redirect after 30 seconds for 500 errors
+        {% if error_code == 500 %}
+        setTimeout(function() {
+            if (confirm('Would you like to return to the dashboard?')) {
+                window.location.href = '/';
+            }
+        }, 30000);
+        {% endif %}
+        
+        // Console logging for debugging
+        console.log('Error {{ error_code }}: {{ error_message or "Unknown error" }}');
+        
+        // Report error to analytics (in production)
+        // This would typically send error data to your analytics service
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'exception', {
+                'description': 'Error {{ error_code }}: {{ error_message or "Unknown error" }}',
+                'fatal': {% if error_code == 500 %}true{% else %}false{% endif %}
+            });
+        }
+    </script>
+</body>
+</html>

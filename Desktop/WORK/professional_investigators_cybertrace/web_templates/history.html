@@ -1,0 +1,793 @@
+{% extends "base.html" %}
+
+{% block title %}Investigation History - Professional Phone Intelligence System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .timeline-container {
+        position: relative;
+        margin: 2rem 0;
+    }
+    
+    .timeline-line {
+        position: absolute;
+        left: 2rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, #667eea, #764ba2);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+        padding-left: 5rem;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    
+    .timeline-marker.completed {
+        background: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    
+    .timeline-marker.active {
+        background: #ffc107;
+        border-color: #ffc107;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+    
+    .timeline-marker.failed {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+    .timeline-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .timeline-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .investigation-stats {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .stat-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 auto 0.5rem;
+    }
+    
+    .stat-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    .stat-warning {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+    }
+    
+    .stat-danger {
+        background: linear-gradient(135deg, #dc3545, #e83e8c);
+    }
+    
+    .stat-info {
+        background: linear-gradient(135deg, #17a2b8, #6f42c1);
+    }
+    
+    .filter-controls {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .date-range-picker {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        padding: 0.5rem 1rem;
+    }
+    
+    .date-range-picker:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .export-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    .activity-chart {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .investigation-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin: 0.25rem;
+    }
+    
+    .tag-comprehensive {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+    }
+    
+    .tag-basic {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+    
+    .phone-highlight {
+        font-family: 'Courier New', monospace;
+        background: #f8f9fa;
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 mb-2">
+                <i class="fas fa-history me-3"></i>Investigation History
+            </h1>
+            <p class="text-muted">
+                Complete timeline of all your phone intelligence investigations
+            </p>
+        </div>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="row">
+        <div class="col-12">
+            <div class="investigation-stats">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle stat-success" id="totalInvestigations">0</div>
+                        <h6>Total Investigations</h6>
+                        <p class="text-muted mb-0">All time</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle stat-info" id="successRate">0%</div>
+                        <h6>Success Rate</h6>
+                        <p class="text-muted mb-0">Completed successfully</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle stat-warning" id="avgDuration">0m</div>
+                        <h6>Avg Duration</h6>
+                        <p class="text-muted mb-0">Average completion time</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-circle stat-danger" id="thisWeek">0</div>
+                        <h6>This Week</h6>
+                        <p class="text-muted mb-0">New investigations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Chart -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="activity-chart">
+                <h5 class="mb-3">
+                    <i class="fas fa-chart-line me-2"></i>Investigation Activity
+                </h5>
+                <canvas id="activityChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="filter-controls">
+                <h6 class="mb-3">Filter & Search</h6>
+                
+                <div class="mb-3">
+                    <label class="form-label">Search</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="searchHistory" 
+                           placeholder="Search by phone number or ID...">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Date Range</label>
+                    <select class="form-select" id="dateRangeFilter">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3" id="customDateRange" style="display: none;">
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="date" class="form-control form-control-sm" id="startDate">
+                        </div>
+                        <div class="col-6">
+                            <input type="date" class="form-control form-control-sm" id="endDate">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="active">Active</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary w-100" onclick="applyFilters()">
+                    <i class="fas fa-filter me-2"></i>Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="row">
+        <div class="col-12">
+            <h4 class="mb-4">Investigation Timeline</h4>
+            <div class="timeline-container" id="timelineContainer">
+                <div class="timeline-line"></div>
+                <div class="d-flex justify-content-center py-5" id="timelineLoading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading timeline...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="export-section">
+                <h5 class="mb-3">
+                    <i class="fas fa-download me-2"></i>Export Investigation History
+                </h5>
+                <p class="text-muted mb-4">
+                    Download your complete investigation history in various formats
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <button class="btn btn-success me-2" onclick="exportHistory('csv')">
+                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                        </button>
+                        <button class="btn btn-info me-2" onclick="exportHistory('json')">
+                            <i class="fas fa-file-code me-2"></i>Export as JSON
+                        </button>
+                        <button class="btn btn-warning" onclick="exportHistory('pdf')">
+                            <i class="fas fa-file-pdf me-2"></i>Export as PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Investigation Details Modal -->
+<div class="modal fade" id="investigationDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Investigation Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="investigationDetailsContent">
+                <!-- Details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="viewFullReport">
+                    <i class="fas fa-eye me-2"></i>View Full Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allInvestigations = [];
+    let filteredInvestigations = [];
+    let activityChart = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize
+        loadInvestigationHistory();
+        initializeEventHandlers();
+        initializeChart();
+        
+        // Auto-refresh every 5 minutes
+        setInterval(loadInvestigationHistory, 300000);
+    });
+    
+    function initializeEventHandlers() {
+        // Date range filter
+        document.getElementById('dateRangeFilter').addEventListener('change', function() {
+            const customRange = document.getElementById('customDateRange');
+            if (this.value === 'custom') {
+                customRange.style.display = 'block';
+            } else {
+                customRange.style.display = 'none';
+            }
+        });
+        
+        // Search input
+        document.getElementById('searchHistory').addEventListener('input', function() {
+            debounce(applyFilters, 500)();
+        });
+    }
+    
+    function loadInvestigationHistory() {
+        fetch('/api/investigations')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    allInvestigations = data.investigations.sort((a, b) => 
+                        new Date(b.started_at) - new Date(a.started_at)
+                    );
+                    updateStatistics();
+                    updateActivityChart();
+                    filteredInvestigations = [...allInvestigations];
+                    renderTimeline();
+                } else {
+                    showError('Failed to load investigation history');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading history:', error);
+                showError('Error loading investigation history: ' + error.message);
+            });
+    }
+    
+    function updateStatistics() {
+        const total = allInvestigations.length;
+        const completed = allInvestigations.filter(inv => inv.status === 'completed').length;
+        const successRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+        
+        // Calculate average duration (mock calculation)
+        const avgDuration = Math.floor(Math.random() * 10) + 5; // 5-15 minutes
+        
+        // This week count
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const thisWeek = allInvestigations.filter(inv => 
+            new Date(inv.started_at) > oneWeekAgo
+        ).length;
+        
+        document.getElementById('totalInvestigations').textContent = total;
+        document.getElementById('successRate').textContent = successRate + '%';
+        document.getElementById('avgDuration').textContent = avgDuration + 'm';
+        document.getElementById('thisWeek').textContent = thisWeek;
+    }
+    
+    function initializeChart() {
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        
+        activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Investigations',
+                    data: [],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+    
+    function updateActivityChart() {
+        // Generate last 7 days data
+        const labels = [];
+        const data = [];
+        
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+            const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            labels.push(dateStr);
+            
+            // Count investigations for this day
+            const dayCount = allInvestigations.filter(inv => {
+                const invDate = new Date(inv.started_at);
+                return invDate.toDateString() === date.toDateString();
+            }).length;
+            
+            data.push(dayCount);
+        }
+        
+        activityChart.data.labels = labels;
+        activityChart.data.datasets[0].data = data;
+        activityChart.update();
+    }
+    
+    function applyFilters() {
+        let filtered = [...allInvestigations];
+        
+        // Search filter
+        const searchTerm = document.getElementById('searchHistory').value.toLowerCase().trim();
+        if (searchTerm) {
+            filtered = filtered.filter(inv =>
+                inv.phone_number.toLowerCase().includes(searchTerm) ||
+                inv.investigation_id.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // Date range filter
+        const dateRange = document.getElementById('dateRangeFilter').value;
+        if (dateRange !== 'all') {
+            const now = new Date();
+            let startDate;
+            
+            switch (dateRange) {
+                case 'today':
+                    startDate = new Date(now.setHours(0, 0, 0, 0));
+                    break;
+                case 'week':
+                    startDate = new Date(now.setDate(now.getDate() - 7));
+                    break;
+                case 'month':
+                    startDate = new Date(now.setMonth(now.getMonth() - 1));
+                    break;
+                case 'custom':
+                    const startInput = document.getElementById('startDate').value;
+                    const endInput = document.getElementById('endDate').value;
+                    if (startInput && endInput) {
+                        startDate = new Date(startInput);
+                        const endDate = new Date(endInput);
+                        filtered = filtered.filter(inv => {
+                            const invDate = new Date(inv.started_at);
+                            return invDate >= startDate && invDate <= endDate;
+                        });
+                    }
+                    break;
+            }
+            
+            if (dateRange !== 'custom' && startDate) {
+                filtered = filtered.filter(inv => new Date(inv.started_at) >= startDate);
+            }
+        }
+        
+        // Status filter
+        const status = document.getElementById('statusFilter').value;
+        if (status !== 'all') {
+            filtered = filtered.filter(inv => inv.status === status);
+        }
+        
+        filteredInvestigations = filtered;
+        renderTimeline();
+    }
+    
+    function renderTimeline() {
+        const container = document.getElementById('timelineContainer');
+        const loading = document.getElementById('timelineLoading');
+        
+        if (loading) {
+            loading.remove();
+        }
+        
+        if (filteredInvestigations.length === 0) {
+            container.innerHTML = `
+                <div class="timeline-line"></div>
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>No investigations found</h5>
+                    <p class="text-muted">Try adjusting your filters or search criteria</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const timelineItems = filteredInvestigations.map((inv, index) => createTimelineItem(inv, index)).join('');
+        
+        container.innerHTML = `
+            <div class="timeline-line"></div>
+            ${timelineItems}
+        `;
+    }
+    
+    function createTimelineItem(investigation, index) {
+        const markerClass = getMarkerClass(investigation.status);
+        const markerIcon = getMarkerIcon(investigation.status);
+        const duration = calculateDuration(investigation);
+        
+        return `
+            <div class="timeline-item">
+                <div class="timeline-marker ${markerClass}">
+                    <i class="fas ${markerIcon}"></i>
+                </div>
+                
+                <div class="card timeline-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title mb-0">
+                                <span class="phone-highlight">${investigation.phone_number}</span>
+                            </h6>
+                            <div class="text-end">
+                                <span class="investigation-tag tag-${investigation.investigation_type || 'comprehensive'}">
+                                    ${(investigation.investigation_type || 'comprehensive').charAt(0).toUpperCase() + 
+                                      (investigation.investigation_type || 'comprehensive').slice(1)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <small class="text-muted">Started:</small>
+                                <div>${formatDateTime(investigation.started_at)}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">Duration:</small>
+                                <div>${duration}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <small class="text-muted">Status:</small>
+                                <div>
+                                    <span class="badge bg-${getStatusBadge(investigation.status)}">
+                                        ${investigation.status.charAt(0).toUpperCase() + investigation.status.slice(1)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">Progress:</small>
+                                <div>${investigation.progress?.toFixed(1) || 0}%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewInvestigationDetails('${investigation.investigation_id}')">
+                                <i class="fas fa-eye me-1"></i>Details
+                            </button>
+                            ${investigation.status === 'completed' ? `
+                            <button class="btn btn-sm btn-success" onclick="downloadReport('${investigation.investigation_id}')">
+                                <i class="fas fa-download me-1"></i>Report
+                            </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function getMarkerClass(status) {
+        switch (status) {
+            case 'completed': return 'completed';
+            case 'active': return 'active';
+            case 'failed': return 'failed';
+            default: return '';
+        }
+    }
+    
+    function getMarkerIcon(status) {
+        switch (status) {
+            case 'completed': return 'fa-check';
+            case 'active': return 'fa-spinner fa-spin';
+            case 'failed': return 'fa-times';
+            default: return 'fa-phone';
+        }
+    }
+    
+    function getStatusBadge(status) {
+        switch (status) {
+            case 'completed': return 'success';
+            case 'active': return 'warning';
+            case 'failed': return 'danger';
+            default: return 'secondary';
+        }
+    }
+    
+    function calculateDuration(investigation) {
+        const start = new Date(investigation.started_at);
+        const end = investigation.completed_at ? new Date(investigation.completed_at) : new Date();
+        const diff = end - start;
+        
+        const minutes = Math.floor(diff / 60000);
+        if (minutes < 60) {
+            return `${minutes} min`;
+        }
+        
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        return `${hours}h ${remainingMinutes}m`;
+    }
+    
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    
+    function viewInvestigationDetails(investigationId) {
+        fetch(`/api/investigation_status/${investigationId}`)
+            .then(response => response.json())
+            .then(data => {
+                showInvestigationDetails(data);
+            })
+            .catch(error => {
+                alert('Error loading investigation details: ' + error.message);
+            });
+    }
+    
+    function showInvestigationDetails(investigation) {
+        const content = document.getElementById('investigationDetailsContent');
+        
+        content.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Basic Information</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Phone Number:</strong></td><td class="phone-highlight">${investigation.phone_number}</td></tr>
+                        <tr><td><strong>Investigation ID:</strong></td><td><code>${investigation.investigation_id}</code></td></tr>
+                        <tr><td><strong>Investigator:</strong></td><td>${investigation.investigator}</td></tr>
+                        <tr><td><strong>Type:</strong></td><td>${investigation.investigation_type || 'Comprehensive'}</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6>Timeline</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Started:</strong></td><td>${formatDateTime(investigation.started_at)}</td></tr>
+                        ${investigation.completed_at ? `<tr><td><strong>Completed:</strong></td><td>${formatDateTime(investigation.completed_at)}</td></tr>` : ''}
+                        <tr><td><strong>Duration:</strong></td><td>${calculateDuration(investigation)}</td></tr>
+                        <tr><td><strong>Status:</strong></td><td><span class="badge bg-${getStatusBadge(investigation.status)}">${investigation.status}</span></td></tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6>Progress</h6>
+                    <div class="progress mb-2">
+                        <div class="progress-bar" style="width: ${investigation.progress || 0}%"></div>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">${investigation.progress?.toFixed(1) || 0}% Complete</small>
+                    </div>
+                </div>
+            </div>
+            
+            ${investigation.has_results ? `
+            <div class="alert alert-success mt-3">
+                <i class="fas fa-check-circle me-2"></i>
+                Investigation results are available
+            </div>
+            ` : ''}
+            
+            ${investigation.report_available ? `
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-file-alt me-2"></i>
+                Investigation report has been generated and is ready for download
+            </div>
+            ` : ''}
+        `;
+        
+        // Setup view report button
+        const viewReportBtn = document.getElementById('viewFullReport');
+        viewReportBtn.onclick = () => {
+            if (investigation.report_available) {
+                downloadReport(investigation.investigation_id);
+            } else {
+                alert('Report not yet available');
+            }
+        };
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('investigationDetailsModal'));
+        modal.show();
+    }
+    
+    function downloadReport(investigationId) {
+        window.location.href = `/api/download_report/${investigationId}`;
+    }
+    
+    function exportHistory(format) {
+        alert(`Export to ${format.toUpperCase()} would be implemented here`);
+    }
+    
+    function showError(message) {
+        const container = document.getElementById('timelineContainer');
+        container.innerHTML = `
+            <div class="alert alert-danger text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                ${message}
+            </div>
+        `;
+    }
+    
+    // Utility function for debouncing
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+</script>
+{% endblock %}
